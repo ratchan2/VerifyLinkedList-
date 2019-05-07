@@ -1,7 +1,7 @@
 # VerifyLinkedList-
 Verification of Linked List insert and delete operations using Z3 prover
 
-1_Sorts.theory contains all the type declaration 
+1_Sorts.theory contains all the type declaration \n
 2_ReadList.theory contains all the axioms that capture the effects of traversing through the list
 3_UpdateList.theory contains all the axioms capturing the effects of linking a node to another node in the list
 z3.exe : The Z3 Theorem Prover itself built for Windows 10 machines
