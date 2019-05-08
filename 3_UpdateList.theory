@@ -1,0 +1,121 @@
+;axiom for effect of link-next
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (link-next x y s) (succ s s1)) (next x y s1))))
+
+
+;the following rules depict the interplay of admissiblity, reachability and connectivity w.r.t
+;link-next action
+;admissible is defined in terms of reachability and connectivity
+(assert (forall ((x Node) (s State)) (implies (and (reachable x s) (connected x s)) (admissible x s))))
+(assert (forall ((x Node) (s State)) (implies (admissible x s) (and (reachable x s) (connected x s)))))
+
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (connected x s) (link-next y x s) (succ s s1)) (connected y s1))))
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (reachable x s) (link-next x y s) (connected y s) (succ s s1)) (admissible y s1))))
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (link-next x y s) (connected y s) (succ s s1)) (connected x s1))))
+
+
+;(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (admissible x s) (link-next x y s) (not (admissible y s)) (succ s s1)) (not (admissible x s1)))))
+
+;inertia for reachable
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (reachable x s) (link-next x y s)) (succ s s1)) (reachable x s1))))
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (reachable x s) (link-next x y s)) (succ s s1)) (reachable y s1))))
+
+
+
+;more inertial rules for connected and reachable
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (connected y s) (link-next x y s)  (succ s s1)) (connected y s1))))
+
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (connected y s) (link-next y x s) (connected x s) (succ s s1)) (connected y s1))))
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (connected y s) (link-next y x s) (not (connected x s)) (succ s s1)) (not (connected y s1)))))
+
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (reachable x s) (link-next x y s)(succ s s1)) (reachable x s1))))
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (reachable x s) (link-next x y s)(succ s s1)) (reachable y s1))))
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (reachable x s) (link-next y x s) (not (reachable y s)) (succ s s1)) (reachable x s1))))
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (reachable x s) (link-next y x s) (not (reachable y s)) (succ s s1))  (not (reachable y s1)))))
+
+
+;nodes not involved in link-next action retain reachability, connectivity (and thus admissibility)
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (reachable x s) (and (not (= x y)) (not (= x z))) (link-next y z s) (not (admissible y s)) (succ s s1)) (reachable x s1))))
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (connected x s) (and (not (= x y)) (not (= x z))) (link-next y z s) (not (admissible y s)) (succ s s1)) (connected x s1))))
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (not (reachable x s)) (and (not (= x y)) (not (= x z))) (link-next y z s) (not (admissible y s)) (succ s s1)) (not (reachable x s1)))))
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (not (connected x s)) (and (not (= x y)) (not (= x z))) (link-next y z s) (not (admissible y s)) (succ s s1)) (not (connected x s1)))))
+
+
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (reachable x s) (and (not (= x y)) (not (= x z))) (link-next z y s) (not (admissible y s)) (succ s s1)) (reachable x s1))))
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (connected x s) (and (not (= x y)) (not (= x z))) (link-next z y s) (not (admissible y s)) (succ s s1)) (connected x s1))))
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (not (reachable x s)) (and (not (= x y)) (not (= x z))) (link-next z y s) (not (admissible y s)) (succ s s1)) (not (reachable x s1)))))
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (not (connected x s)) (and (not (= x y)) (not (= x z))) (link-next z y s) (not (admissible y s)) (succ s s1)) (not (connected x s1)))))
+
+
+
+
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (link-next y z s) (succ s s1)) (= (key x s) (key x s1)))))
+
+
+
+;key-membership follows from admissibility 
+(assert (forall ((x Node) (s State)) (implies (admissible x s) (member (key x s) s)))) 
+
+(assert (forall ((x Node) (s State) (s1 State)) (implies (and (admissible x s) (not (admissible x s1)) (succ s s1)) (not (member (key x s) s1))))) 
+
+
+;refutation rule that two pointer updates in insert code do not establish admissibility of temp
+;(assert (not (admissible temp s2)))
+
+;(assert (not (member target_key s2)))
+
+;(assert (not (< (key x s2) (key temp s2))))
+
+
+;hard-coded assumptions, the inertial axioms for reachability and connectivity are not complete yet
+;(assert (admissible x s1))
+;(assert (admissible x s2))
+;(assert (admissible y s1))
+;(assert (admissible y s2))
+
+
+;;effect of skipping a node
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (not (= y z)) (next x y s) (next y z s) (admissible x s) (link-next x z s) (succ s s1)) (skipped y s1))))
+
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (not (= y z)) (next x y s) (link-next x z s) (succ s s1)) (next x z s1))))
+
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (not (= y z)) (next x y s) (link-next x z s) (succ s s1)) (not (next x y s1)))))
+
+;;inertia of skipping a pointer
+
+
+(assert (forall ((x Node) (y Node) (z Node) (w Node) (s State) (s1 State)) (implies (and (and (not (= x z)) (not (= x y))
+) (link-next y z s) (succ s s1) (next x w s)) (next x w s1))))
+
+
+
+;; interplay of reachability and skipped
+
+(assert (forall ((x Node) (s State)) (implies (skipped x s) (not (reachable x s)))))
+
+
+
+
+
+

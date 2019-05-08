@@ -1,0 +1,94 @@
+;x points to y implies key of x < key of y
+(assert (forall ((x Node) (y Node) (s State)) (implies (next x y s) (< (key x s)  (key y s)))))
+(assert (forall ((x Node) (y Node) (s State)) (implies (and (admissible x s) (next x y s)) (admissible y s))))
+
+;tail does not point to any node
+(assert (forall ((x Node) (s State)) (not (next nil x s))))
+
+
+;if x and y are aliases then properties of both x and y are same
+;i establish these for all relevant properties: key, admissible
+(assert (forall ((x Node) (y Node) (s State)) (implies (and (alias x y s) (< (key y s) target_key)) (< (key x s) target_key))))
+(assert (forall ((x Node) (y Node) (s State)) (implies (and (alias x y s) (admissible y s)) (admissible x s)))) 
+
+;alias implies keys are same
+(assert (forall ((x Node) (y Node) (s State)) (implies (alias x y s) (= (key x s) (key y s)))))
+
+
+
+;effect axioms
+;aliasing
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (exec-assign x y s) (succ s s1)) (alias x y s1))))
+
+
+;unaliasing
+(assert (forall ((x Node) (y Node) (s State) (s1 State))  (implies (and (alias x y s) (advance-ptr y s) (succ s s1)) (next x y s1))))
+
+;unaliasing
+(assert (forall ((x Node) (y Node) (s State) (s1 State))  (implies (and (alias x y s) (advance-ptr y s) (succ s s1)) (not (alias x y s1)))))
+
+
+;key updation upon pointer advance
+(assert (forall ((y Node) (z Node) (s State) (s1 State)) (implies (and (advance-ptr y s) (succ s s1) (next y z s)) (= (key y s1) (key z s)))))
+
+;inertia axioms for non-admissibility, non-membership of target_key, membership of target_key 
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (not (admissible x s)) (advance-ptr y s) (succ s s1)) (not (admissible x s1)))))
+
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (not (admissible x s)) (exec-assign y z s) (succ s s1)) (not (admissible x s1)))))  
+
+
+(assert (forall ((x Node) (s State) (s1 State)) (implies (and (not (member target_key s)) (advance-ptr x s) (succ s s1)) (not (member target_key s1)))))
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (not (member target_key s)) (exec-assign x y s) (succ s s1)) (not (member target_key s1)))))
+
+(assert (forall ((x Node) (s State) (s1 State)) (implies (and (member target_key s) (advance-ptr x s) (succ s s1)) (member target_key s1))))
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (member target_key s) (exec-assign x y s) (succ s s1))  (member target_key s1))))
+
+
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (not (admissible x s)) (exec-assign y z s) (succ s s1)) (not (admissible x s1)))))  
+
+
+;advance-ptr "advances" the pointer w.r.t next function
+(assert (forall ((y Node) (z Node) (z1 Node) (s State) (s1 State)) (implies (and (advance-ptr y s) (succ s s1) (next y z s) (next z z1 s)) (next y z1 s1))))
+
+
+;key existence in all states
+(assert (forall ((x Node) (s State)) (implies (not (= x nil)) (= (key-skolem (key x s)) (key x s))))) 
+
+
+;next node existence in all states except for nil
+;(assert (forall ((x Node) (s State)) (implies (or (not (= x nil)) (not (admissible x s))) (next x (next-skolem x s) s))))
+
+;membership of a key follows from the admissibility of the node carrying the key
+(assert (forall ((x Node) (s State)) (implies (admissible x s) (member (key x s) s))))
+ 
+
+;inertia axioms/frame axioms
+(assert (forall ((x Node) (y Node) (s State) (s1 State))  (implies (and (admissible x s) (advance-ptr y s) (succ s s1)) (admissible x s1))))
+
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (admissible y s) (exec-assign x y s) (succ s s1)) (admissible y s1))))	
+
+;inertia axiom for key on pointer advance
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (not (= x y)) (advance-ptr y s) (succ s s1)) (= (key x s) (key x s1)))))
+
+
+;inertia rule for exec-assign/aliasing
+(assert (forall ((x Node) (y Node) (z Node) (s State) (s1 State)) (implies (and (not (= z x)) (not (= z y))  (admissible z s) (exec-assign x y s) (succ s s1)) (admissible z s1))))
+
+(assert (forall ((x Node) (y Node) (s State) (s1 State)) (implies (and (< (key y s) target_key) (exec-assign x y s) (succ s s1)) (< (key y s1) target_key))))
+
+
+
+;membership of a key implies existence of a node with that key
+
+
+;(assert (forall ((k Int) (s State) (x Node)) (implies (member k s) (and (admissible x s) (= (key x s) k))))) 
+
+
+
+
+
+

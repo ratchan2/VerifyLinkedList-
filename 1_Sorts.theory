@@ -1,0 +1,41 @@
+;Nodes are heap cells
+(declare-sort Node)
+
+;States capture transitions/progress
+(declare-sort State)
+
+
+;next function captures the pointer relation. (next x y) means y is next to x in heap
+(declare-fun next (Node Node State) Bool)
+
+
+;key of Node x in State s
+(declare-fun key (Node State) Int)
+
+
+;arbitrary target_key for insertion
+(declare-const target_key Int)
+
+;signifies the tail node
+(declare-const nil Node)
+
+
+;as defined in the slides
+(declare-fun admissible (Node State) Bool)
+(declare-fun reachable (Node State) Bool)
+(declare-fun connected (Node State) Bool)
+(declare-fun exec-assign (Node Node State) Bool)
+(declare-fun alias (Node Node State) Bool)
+(declare-fun advance-ptr (Node State) Bool)
+(declare-fun link-next (Node Node State) Bool)
+(declare-fun skipped (Node State) Bool)
+
+
+;successor state 
+(declare-fun succ (State State) Bool)
+(declare-fun member(Int State) Bool)
+
+
+;ensures every node has a key
+(declare-fun key-skolem (Int) Int)
+(declare-fun next-skolem (Node State) Node)

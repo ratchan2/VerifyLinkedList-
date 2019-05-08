@@ -1,0 +1,59 @@
+(declare-const s0 State)
+(declare-const s1 State)
+(declare-const s2 State)
+(declare-const s3 State)
+(declare-const s4 State)
+
+
+(declare-const k Int)
+;(declare-const z Node)
+
+;x,y represent prev, curr 
+(declare-const x Node)
+(declare-const y Node)
+(declare-const temp Node)
+
+;arbitrary integer keys
+(declare-const k1 Int)
+(declare-const k2 Int)
+
+
+;temporary nodes used in proofs
+(declare-const z Node)
+
+;assumptions on state
+
+(assert (< (key x s0) target_key))
+
+;(assert (admissible nil s0))
+(assert (admissible x s0))
+(assert (next x y s0))
+(assert (= (key x s0) k1))
+(assert (= (key y s0) k2))
+(assert (member k1 s0))
+(assert (member k2 s0))
+
+
+;;now for proving that update works
+(assert (not (= x y)))
+(assert (not (= y z)))
+(assert (not (= x z)))
+
+(assert (succ s0 s1))
+(assert (succ s1 s2))
+(assert (succ s2 s3))
+(assert (succ s3 s4))
+
+
+(assert (< (key y s0) target_key))
+(assert (exec-assign x y s0))
+(assert (advance-ptr y s1))
+
+(assert (not (< (key y s2) target_key)))
+(assert (= (key y s2) target_key))
+
+(assert (next y z s2))
+(assert (link-next x z s2))
+
+
+
