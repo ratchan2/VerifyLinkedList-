@@ -8,9 +8,9 @@
 (declare-const k Int)
 ;(declare-const z Node)
 
-;x,y represent prev, curr 
-(declare-const x Node)
-(declare-const y Node)
+
+(declare-const prev Node)
+(declare-const curr Node)
 (declare-const temp Node)
 
 ;arbitrary integer keys
@@ -23,21 +23,21 @@
 
 ;assumptions on state
 
-(assert (< (key x s0) target_key))
+(assert (< (key prev s0) target_key))
 
 ;(assert (admissible nil s0))
-(assert (admissible x s0))
-(assert (next x y s0))
-(assert (= (key x s0) k1))
-(assert (= (key y s0) k2))
+(assert (admissible prev s0))
+(assert (next prev curr s0))
+(assert (= (key prev s0) k1))
+(assert (= (key curr s0) k2))
 (assert (member k1 s0))
 (assert (member k2 s0))
 
 
 ;;now for proving that update works
-(assert (not (= x y)))
-(assert (not (= y z)))
-(assert (not (= x z)))
+(assert (not (= prev curr)))
+(assert (not (= curr z)))
+(assert (not (= prev z)))
 
 (assert (succ s0 s1))
 (assert (succ s1 s2))
@@ -45,15 +45,15 @@
 (assert (succ s3 s4))
 
 
-(assert (< (key y s0) target_key))
-(assert (exec-assign x y s0))
-(assert (advance-ptr y s1))
+(assert (< (key curr s0) target_key))
+(assert (exec-assign prev curr s0))
+(assert (advance-ptr curr s1))
 
-(assert (not (< (key y s2) target_key)))
-(assert (= (key y s2) target_key))
+(assert (not (< (key curr s2) target_key)))
+(assert (= (key curr s2) target_key))
 
-(assert (next y z s2))
-(assert (link-next x y s2))
+(assert (next curr z s2))
+(assert (link-next prev curr s2))
 
 
 

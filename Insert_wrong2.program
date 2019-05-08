@@ -8,9 +8,9 @@
 (declare-const k Int)
 ;(declare-const z Node)
 
-;x,y represent prev, curr 
-(declare-const x Node)
-(declare-const y Node)
+
+(declare-const prev Node)
+(declare-const curr Node)
 (declare-const temp Node)
 
 ;arbitrary integer keys
@@ -23,27 +23,27 @@
 
 ;assumptions on state
 
-(assert (< (key x s0) target_key))
+(assert (< (key prev s0) target_key))
 
 (assert (= (key temp s0) target_key))
 (assert (= (key temp s2) target_key))
 
 ;(assert (admissible nil s0))
-(assert (admissible x s0))
-(assert (next x y s0))
-(assert (= (key x s0) k1))
-(assert (= (key y s0) k2))
+(assert (admissible prev s0))
+(assert (next prev curr s0))
+(assert (= (key prev s0) k1))
+(assert (= (key curr s0) k2))
 (assert (not (member target_key s0)))
 (assert (member k1 s0))
 (assert (member k2 s0))
 
 
 ;;now for proving that update works
-(assert (admissible x s0))
-(assert (admissible y s0))
-(assert (not (= x y)))
-(assert (not (= y temp)))
-(assert (not (= x z)))
+(assert (admissible prev s0))
+(assert (admissible curr s0))
+(assert (not (= prev curr)))
+(assert (not (= curr temp)))
+(assert (not (= prev z)))
 (assert (not (admissible temp s0)))
 (assert (not (reachable temp s2)))
 (assert (not (connected temp s2)))
@@ -54,15 +54,15 @@
 (assert (succ s3 s4))
 
 
-(assert (< (key y s0) target_key))
-(assert (exec-assign x y s0))
-(assert (advance-ptr y s1))
+(assert (< (key curr s0) target_key))
+(assert (exec-assign prev curr s0))
+(assert (advance-ptr curr s1))
 
 
 
-(assert (not (< (key y s2) target_key)))
-(assert (link-next temp x s2))
-(assert (link-next y temp s3))
+(assert (not (< (key curr s2) target_key)))
+(assert (link-next temp prev s2))
+(assert (link-next curr temp s3))
 
 
 ;assert admissible temp
